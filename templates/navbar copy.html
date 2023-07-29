@@ -1,0 +1,25 @@
+  <header>
+    <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+      <a href="/" class="d-flex align-items-center text-dark text-decoration-none">       
+        <span class="fs-4">DJANGOBASE</span>
+      </a>
+      <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">  
+       
+      </nav>          
+        {% if user.is_authenticated %}
+            <ul class="navbar-nav mr-right mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.username }}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'todolist_home' %}">My Todo List</a></li>
+                <hr>
+                <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+              </ul>
+            </li>
+            </ul>             
+        {% endif %}     
+    </div>
+  </header>

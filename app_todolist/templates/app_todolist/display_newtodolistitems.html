@@ -1,0 +1,65 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Home{% endblock title %} 
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar.html' %}
+<h5>Display New To Do List Items Tree</h5> 
+{% load mptt_tags %}
+<ul>
+{% for node in newtodolist %}
+  {% if node.level == 0 %}
+  <li>{{node.title}}</li>
+  <ul>
+    {% if not node.is_leaf_node %}
+    {% for node1 in node.get_children %}
+    <li>{{node1.title}}</li>
+    <ul>
+      {% if not node1.is_leaf_node %}
+      {% for node2 in node1.get_children %}
+      <li>{{node2.title}}</li>
+      <ul>
+        {% if not node2.is_leaf_node %}
+        {% for node3 in node2.get_children %}
+        <li>{{node3.title}}</li>
+        <ul>
+          {% if not node3.is_leaf_node %}
+          {% for node4 in node3.get_children %}
+          <li>{{node4.title}}</li>
+          <ul>
+            {% if not node4.is_leaf_node %}
+            {% for node5 in node4.get_children %}
+            <li>{{node5.title}}</li>
+            <ul>
+              {% if not node6.is_leaf_node %}
+              {% for node6 in node5.get_children %}
+              <li>{{node6.title}}</li>
+              {% endfor %}
+              {% endif %}
+            </ul>
+            {% endfor %}
+            {% else %}
+            YES
+            {% endif %}
+          </ul>
+          {% endfor %}
+          {% endif %}
+        </ul>
+        {% endfor %}
+        {% endif %}
+      </ul>
+      {% endfor %}
+      {% endif %}
+    </ul>
+    {% endfor %}
+    {% endif %}
+  </ul>
+  {% endif %}
+{% endfor %}
+</ul>
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}

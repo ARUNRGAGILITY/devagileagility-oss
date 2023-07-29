@@ -1,0 +1,33 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Home{% endblock title %} 
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar.html' %}
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</head>
+<body>
+<table class="display1">
+<tr valign='top'>
+<td valign='top'>
+<a href="{% url 'toplevels_home' %}">List Levels</a>
+</td>
+</tr>
+</table>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit"/>
+</form>
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}

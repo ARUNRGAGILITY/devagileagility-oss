@@ -1,0 +1,230 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Home{% endblock title %} 
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar.html' %}
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+$( function() {
+  $("input:text").focus();
+  $('td:nth-child(5),th:nth-child(5)').hide();
+  $('td:nth-child(6),th:nth-child(6)').hide();
+  $('td:nth-child(7),th:nth-child(7)').hide();
+  $('td:nth-child(8),th:nth-child(8)').hide();
+  $('td:nth-child(9),th:nth-child(9)').hide();
+
+  $(".show_hide_details").click(function (event) {
+        var checkbox_data = $(this).attr('id');
+        var checkbox_this = $(this);
+        if ($(this).prop('checked')==true){ 
+          $('td:nth-child(4),th:nth-child(4)').show();
+          $('td:nth-child(5),th:nth-child(5)').show();
+          $('td:nth-child(6),th:nth-child(6)').show();
+          $('td:nth-child(7),th:nth-child(7)').show();
+          $('td:nth-child(8),th:nth-child(8)').show();
+          $('td:nth-child(9),th:nth-child(9)').show();
+          $('td:nth-child(10),th:nth-child(10)').show();
+        } else {  
+          $('td:nth-child(4),th:nth-child(4)').hide();
+          $('td:nth-child(5),th:nth-child(5)').hide();
+          $('td:nth-child(6),th:nth-child(6)').hide();
+          $('td:nth-child(7),th:nth-child(7)').hide();
+          $('td:nth-child(8),th:nth-child(8)').hide();
+          $('td:nth-child(9),th:nth-child(9)').hide();
+          $('td:nth-child(10),th:nth-child(10)').hide();
+        }
+  });
+  $(".done_checkbox").click(function (event) {
+        var checkbox_data = $(this).attr('id');
+        var checkbox_this = $(this);
+        
+        //alert($(this).attr('id'));
+        if ($(this).prop('checked')==true){ 
+          checkbox_data += '_done';
+          //alert("done");
+          checkbox_this.closest('tr').find('.progress1').html("<b>Done</b>" );
+        } else {
+          //alert("undone");
+          checkbox_data += '_open';
+          checkbox_this.closest('tr').find('.progress1').html("<b>TBC</b>" );
+        }
+        $.ajax({                
+                url: '/todolist/typelist_update/',
+                type: 'POST',
+                data : {
+                  'csrfmiddlewaretoken': "{{ csrf_token }}",
+                  'checkbox_data': checkbox_data
+                },
+                success: function(result) {            
+                    checkbox_this.closest('tr').find('.completed').text(result['result'] );
+                    checkbox_this.closest('tr').find('.duration').text(result['duration_in_hours'] );
+                    checkbox_this.closest('tr').find('.progress').text("Done" );
+                },
+                 error: function() {
+                    //alert('it broke');
+                },
+                complete: function() {
+                    //alert('it completed');
+                }
+            });
+            // THIS SUCCESSFUL $(this).closest('tr').find('.completed').text("DONE!");
+  });
+  var sortableList = $('#sortable');
+
+
+  $( "#sortable" ).sortable({
+      stop: function(event, ui) {
+        var serialOrder = $('#sortable').sortable('serialize');
+        var arrayOrder = $('#sortable').sortable('toArray');
+        $.ajax({
+          url: '/todolist/sorted_todolist',
+          type: 'POST',
+          data : {
+            'csrfmiddlewaretoken': "{{ csrf_token }}",
+            'sorted_list_data': JSON.stringify(arrayOrder)
+          },
+          dataType: 'json',
+          success: function(data) {
+            console.log(data);
+          }
+        });
+         $(this).find('tr').each(function(i){
+            $(this).children('td:first').text(i+1);
+        });
+      }
+  });
+  $( "#sortable" ).sortable();
+  $( "#sortable" ).disableSelection();
+} );
+</script>
+</head>
+<body>
+<table class="display1"> 
+<tr valign='top'>
+<td valign='top'>
+</td>
+<td valign='top'>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      {% if ancestors %}
+        {% for ancestor in ancestors %}
+        {% if forloop.first %}
+        <li class="breadcrumb-item"><a href="/todolist/typelist_home">TypeList</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'list_childtypelist' ancestor.pk %}">{{ ancestor.title }}</a></li>
+        {% else %}
+        <li class="breadcrumb-item"><a href="{% url 'list_childtypelist' ancestor.pk %}">{{ ancestor.title }} </a></li>
+        {% endif %}
+        {% endfor %}
+        {% if get_last_item  %}
+        <li class="breadcrumb-item">{{ get_last_item }}</li>
+        {% endif %}
+      {% else %}
+      <li class="breadcrumb-item"><a href="/todolist/typelist_home">TypeList</a></li>
+      <li class="breadcrumb-item">{{ get_last_item }}</li>
+      {% endif %}
+    </ol>
+  </nav>
+<form method='POST' action=''>
+  {% csrf_token %}
+  <input type="hidden" name="parent" value="{{todolist_parent_id}}"/>
+  <b>Type:</b>&nbsp;&nbsp; 
+  {{ form.title.label_tag }} {{ form.title }}
+  <input type='submit' name='submit' value='Add'/>
+</form>
+</td>
+
+<td>&nbsp;&nbsp;Total: {{newtodolistitems_count}} Type(s) </td>
+<td ><p align="right">&nbsp;&nbsp; <a href="{% url 'display_typelist_as_table_id' todolist_parent_id %}">Summary</a></p></td>
+</tr>
+</table>
+<form name="todoform" method="POST" action="">
+<table  id="outline" class="table table-bordered" >
+      <thead>
+        <tr>
+          <th width="2%"><p align="right">#</p></th>
+          <th width="2%"><p align="right">.</p></th>
+          <th><p align="left">Type Item  &nbsp;&nbsp;
+            <input type='checkbox' name='show_hide' class='show_hide_details' /> 
+          </p>
+          </th>
+          <th>Description</th>
+          <th><p align="right">Created</p></th>
+          <th><p align="right">Updated</p></th>
+          <th>
+            <p align="right">Action</p>
+          </th>
+        </tr>
+      </thead>
+      <tbody id='sortable'>
+        {% for todo in newtodolist %}
+        {% if todo.active %}
+        <tr id="{{todo.id}}_{{ forloop.counter }}" class="ui-state-default" style='background-color: white;'>
+        <td width="2%">{{ forloop.counter }}</td>      
+        <td width="2%">
+          {% if not todo.is_leaf_node %}   
+            <img width="10px" height="10px" src="{% static 'img/folder-fill.svg' %}" alt="Folder has Contents">
+          {% else %}
+            <img width="10px" height="10px" src="{% static 'img/folder.svg' %}" alt="Empty Folder">
+          {% endif %}
+        </td>        
+        <td>
+        <span>
+         <a href="{% url 'list_childtypelist' todo.id %}"> {{ todo.title }} </a> 
+        </span>
+        <br>
+        <i></i>
+        </td>
+        <td>{{ todo.description }}</td>
+        <td>{{todo.created_at|timesince}}</td>
+        <td>{{todo.created_at}}</td>
+        <td class='updated_time'>{{todo.updated_at|timesince}}</td>     
+   
+        <td width="25%" align="right">   
+          <table>
+            <tr>
+              <td>
+                <table>
+                  <tr>
+
+                    <td>
+                      <a href="{% url 'display_typelist_as_table_id' todo.id  %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/summary.svg' %}" alt=""></a>&nbsp;&nbsp;
+                      <a href="{% url 'typelist_edit' todo.id %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/edit-svgrepo-com.svg' %}" alt=""></a>&nbsp;&nbsp;
+                      <a href="{% url 'typelist_delete' todo.id %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/delete-svgrepo-com.svg' %}" alt=""></a>&nbsp;&nbsp;
+                      <a href="{% url 'clone_typelist' todo.id %}" class="" role=""  aria-disabled=""><img width="23px" height="23px" src="{% static 'img/copy-svgrepo-com.svg' %}" alt=""></a>&nbsp;&nbsp;
+                    </td>
+                
+                  </tr>
+                </table>
+              </td>
+              <td>
+                <table>
+                  <tr>
+                    {% if not todo.is_leaf_node %}          
+                    <td><a href="{% url 'deepclone_typelist' todo.id %}" class="" role=""  aria-disabled=""><img width="15px" height="15px" src="{% static 'img/copy-course-svgrepo-com.svg' %}" alt=""></a>&nbsp;</td>
+                    {% else %}
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    {% endif %}
+                  </tr>
+                </table>   
+              </td>
+            </tr>
+          </table>         
+        </td>
+      </tr>
+      {% endif %}
+        {% endfor %}
+      </tbody>
+</table>
+</form>
+{% else %}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}

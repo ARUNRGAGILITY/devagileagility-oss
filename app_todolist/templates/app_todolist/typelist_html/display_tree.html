@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Home{% endblock title %}
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar.html' %}
+
+{% load mptt_tags %}
+<div class="row">
+    <div class="col-md-4"><h5>Types Display Tree</h5> </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <a href="/">Home</a>&nbsp;&nbsp;
+        <a href="{% url 'typelist_home' %}">Type List</a>&nbsp;&nbsp;
+        <a href="{% url 'display_typelist_as_table' %}">Display as Table</a>
+    </div>
+</div>
+<ul>
+{% for node in my_objects %}
+
+    {% if not node.parent %}
+        {% if node.active == True and node.author == user %}
+        <li>{{ node.title }}</li>
+        {% if not node.is_leaf_node %}
+        <ul>
+            {% if node.active == True and node.author == user %}
+            {% recursetree node.get_descendants %}
+                {% if node.active == True and node.author == user %}
+                <li>{{ node.title }}</li>
+                <ul>
+                {{ children }}
+                </ul>
+                {% endif %}
+            {% endrecursetree %}
+            {% endif %}
+        </ul>
+        {% endif %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+</ul>
+
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}

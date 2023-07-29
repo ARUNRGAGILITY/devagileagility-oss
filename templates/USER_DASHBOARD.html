@@ -1,0 +1,64 @@
+{% load static %}
+<div class="container p-0 m-0 ">
+    <div class="row">
+        <div class="col-md-4"><b>User's Dashboard</b></div>
+        <div class="col-md-8"></div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-md-2">
+            <a href="{% url 'todolist_home' %}">
+                <img width='40px' height='40px' 
+                src="{% static 'img/to-do-list-svgrepo-com.svg' %}" alt="">
+            </a>
+            <br>
+            <a href="{% url 'todolist_home' %}">
+                <b>My Todo list</b>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'display_newtodolistitems' %}">
+                <img width='40px' height='40px' 
+                src="{% static 'img/to-do-list-svgrepo-com.svg' %}" alt="">
+            </a>
+            <br>
+            <a href="{% url 'display_newtodolistitems' %}">
+                <b>Summarize as Tree (all Items)</b>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'display_todolist_as_table' %}">
+                <img width='40px' height='40px' 
+                src="{% static 'img/to-do-list-svgrepo-com.svg' %}" alt="">&nbsp;
+                <img width='40px' height='40px' 
+                src="{% static 'img/summary.svg' %}" alt="">
+            </a>
+            <br>
+            <a href="{% url 'display_todolist_as_table' %}">
+                <b>Summarize as Table (all items)</b>
+            </a>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+           
+            <a href="{% url 'typelist_home' %}">
+                <b>Create/Manage Type</b>
+            </a>
+        </div>
+        <div class="col-md-2">
+           
+        </div>
+        <div class="col-md-2">
+           
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-2"></div>
+    </div>
+</div>

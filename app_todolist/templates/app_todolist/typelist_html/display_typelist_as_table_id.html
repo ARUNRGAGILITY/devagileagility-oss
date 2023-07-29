@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+    {% if user.is_authenticated %}
+{% include 'navbar.html' %}
+
+<div class="row">
+    <div class="col-md-4"><h5>Summary of Specific Type(s)</h5> </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <a href="/">Home</a>&nbsp;&nbsp;
+        <a href="{% url 'typelist_home' %}">Type List</a>&nbsp;&nbsp;
+        <a href="{% url 'display_childtypelist' %}">Display as Tree</a>
+    </div>
+</div>
+{% load mptt_tags %}
+{% with counter="0" %}
+<table border="1" class="table table-bordered serial-number-column">
+    <thead>
+        <tr>
+            <th width="2%">SlNo.</th>
+            <th width="2%">ID</th>
+            <th>Title</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for node in my_objects %}
+
+        <tr>
+            {% if node.active == True and node.author == user %}
+            <td width="2%" class="slno"></td>
+            <td width="2%">{{node.id}}</td>
+            <td> <a href="{% url 'list_childtypelist' node.id %}"> {{ node.title }} </a> </td>
+            <td width="15%">
+               {{ node.description}}
+            </td>
+            {% endif %}
+        </tr>
+        {% if not node.is_leaf_node %}
+            {% recursetree node.get_descendants %}
+                <tr>
+                    {% if node.active == True and node.author == user %}
+                    <td width="2%" class="slno"></td>
+                    <td  width="2%">{{node.id}}</td>
+                    <td style="padding-left: {{ node.level }}em;">
+                        <a href="{% url 'list_childtypelist' node.id %}"> {{ node.title }} </a>
+                    </td>
+                    <td width="35%">
+                       {{ node.description}}
+                    </td>
+                    {% endif %}
+                </tr>
+                {{ children }}
+            {% endrecursetree %}
+        {% endif %}
+
+{% endfor %}
+</tbody>
+</table>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    updateSerialNumbers();
+    });
+    
+    function updateSerialNumbers() {
+    var serialNumberCells = document.getElementsByClassName('slno');
+    for (var i = 0; i < serialNumberCells.length; i++) {
+        serialNumberCells[i].textContent = i + 1;
+    }
+    }
+    </script>
+{% endwith %}
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}>

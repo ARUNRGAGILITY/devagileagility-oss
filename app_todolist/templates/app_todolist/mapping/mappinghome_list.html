@@ -1,0 +1,93 @@
+{% extends "base.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Home{% endblock title %} 
+{% block content %}
+{% if user.is_authenticated %}
+{% include 'navbar.html' %}
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+  </style>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+</head>
+<body>
+<table class="display1">
+<tr valign='top'>
+<td valign='top'>
+<a href="{% url 'add_mapping' %}">Add Mapping</a>
+</td>
+<td>&nbsp;&nbsp;Total: {{glist_count}} Mapping(s)</td>
+
+</tr>
+</table>
+<form name="todoform" method="POST" action="">
+<table  id="outline" class="table table-bordered  " >
+      <thead>
+        <tr>
+          <th width="2%"><p align="right">#</p></th>
+          <th><p align="left">Map Name</p>
+          </th>
+          <th><p align="right">Description</p></th>
+          <th><p align="right">Source Item</p></th>
+          <th><p align="right">Mapped as</p></th>
+          
+          <th><p align="right">Created</p></th>
+          <th><p align="right">Created at </p></th>
+          <th><p align="right">Updated</p></th>
+          <th>
+            <p align="right">Action</p>
+          </th>
+        </tr>
+      </thead>
+      <tbody id='sortable'>
+        {% for todo in glist %}
+        <tr id="{{todo.id}}_{{ forloop.counter }}" class="ui-state-default" style='background-color: white;'>
+        <td width="2%" align="right">{{ forloop.counter }}</td>   
+       
+        <td>
+        <span>
+         <a href="{% url 'list_newtodolistitems' todo.id %}"> {{ todo.name }} </a> 
+        </span>
+        </td>
+        <td>
+          <span>
+            <a href="{% url 'list_newtodolistitems' todo.id %}"> {{ todo.description }} </a> 
+          </span>
+        </td>
+        <td>
+          <span>
+            <a href="{% url 'list_newtodolistitems' todo.id %}"> {{ todo.parent }} </a> 
+          </span>
+        </td>
+        <td>
+        <span>
+          <a href="{% url 'list_newtodolistitems' todo.id %}"> {{ todo.destination }} </a> 
+        </span>
+        </td>
+        
+         
+        <td>{{todo.created_at|timesince}}</td>
+        <td>{{todo.created_at}}</td>
+        <td class='updated_time'>{{todo.updated_at}}</td>
+       
+        
+        <td width="15%">
+          <p align="right">
+            <a href="{% url 'display_todolist_as_table_id' todo.id %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/summary.svg' %}" alt=""></a>&nbsp;
+            <a href="{% url 'edit_todolist' todo.id %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/edit-svgrepo-com.svg' %}" alt=""></a>&nbsp;
+            <a href="{% url 'delete_todolist' todo.id %}" class="" role=""  aria-disabled=""><img width="20px" height="20px" src="{% static 'img/delete-svgrepo-com.svg' %}" alt=""></a>&nbsp;
+          </p>          
+        </td>
+      </tr>
+        {% endfor %}
+      </tbody>
+</table>
+</form>
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}

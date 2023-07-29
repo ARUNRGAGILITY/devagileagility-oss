@@ -1,0 +1,24 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block title %}Edit Type Item{% endblock title %} 
+{% block content %}
+{% include 'navbar.html' %}
+<h1>Edit Type Item</h1>
+{% if form.errors %}
+  <div class="alert alert-danger" role="alert">
+    <strong>Oops! Something went wrong:</strong>
+    <ul>
+      {% for field_errors in form.errors.values %}
+        {% for error in field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+<form action="" method='POST' class='form'>
+{% csrf_token %}
+{{form.as_p}}
+<input type='submit' value='Confirm'/>
+</form>
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+    {% if user.is_authenticated %}
+{% include 'navbar.html' %}
+
+<div class="row">
+    <div class="col-md-4"><h5>Summary of Specific Topic/Item(s)</h5> </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <a href="/">Home</a>&nbsp;&nbsp;
+        <a href="{% url 'todolist_home' %}">Todo List</a>&nbsp;&nbsp;
+        <a href="{% url 'display_newtodolistitems' %}">Display as Tree</a>
+    </div>
+</div>
+{% load mptt_tags %}
+{% with counter="0" %}
+<table border="1" class="table table-bordered serial-number-column">
+    <thead>
+        <tr>
+            <th width="2%">Slno.</th>
+            <th width="2%">ID</th>
+            <th>Title</th>
+            <th>Progress</th>
+            <th>Done</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for node in my_objects %}
+
+        <tr>
+            {% if node.active == True and node.author == user %}
+            <td  width="2%" class="slno"></td>
+            <td width="2%">{{node.id}}</td>
+            <td> <a href="{% url 'list_newtodolistitems' node.id %}"> {{ node.title }} </a> </td>
+            <td width="15%">
+                <font size="-1">
+                {% with completion_stats=node.get_completion_stats %}
+                {{ completion_stats.completed_count }}/{{ completion_stats.total_count }} done.
+                {{ completion_stats.percent_complete }}%
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                    style="width:{{ completion_stats.percent_complete }}%;"
+                    aria-valuenow="{{ completion_stats.percent_complete }}"
+                    aria-valuemin="0"
+                    aria-valuemax="100"></div>
+                </div>
+                {% endwith %}
+                </font>
+            </td>
+            <td width="4%">
+                {% if node.done %}
+                    <img width='20px' height='20px' src="{% static 'img/check-mark-green.svg' %}" alt="">
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+        {% if not node.is_leaf_node %}
+            {% recursetree node.get_descendants %}
+                <tr>
+                    {% if node.active == True and node.author == user %}
+                    <td  width="2%" class="slno"></td>
+                    <td  width="2%">{{node.id}}</td>
+                    <td style="padding-left: {{ node.level }}em;">
+                        <a href="{% url 'list_newtodolistitems' node.id %}"> {{ node.title }} </a>
+                    </td>
+                    <td width="15%">
+                        <font size="-1">
+                        {% if not node.is_leaf_node %}
+                        {% with completion_stats=node.get_completion_stats %}
+                        {{ completion_stats.completed_count }}/{{ completion_stats.total_count }} done.
+                        {{ completion_stats.percent_complete }}%
+                         <div class="progress">
+                          <div class="progress-bar" role="progressbar"
+                          style="width:{{ completion_stats.percent_complete }}%;"
+                          aria-valuenow="{{ completion_stats.percent_complete }}"
+                          aria-valuemin="0"
+                          aria-valuemax="100"></div>
+                      </div>
+                        {% endwith %}
+                        {% else %}
+                        {% if node.done  %}
+                          <b>Done</b>
+                          {% else %}
+                          <b>TBC</b>
+                        {% endif %}
+                        {% endif %}
+                        </font>
+                    </td>
+                    <td width="4%">
+                        {% if node.done %}
+                            <img width='20px' height='20px' src="{% static 'img/check-mark-green.svg' %}" alt="">
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {{ children }}
+            {% endrecursetree %}
+        {% endif %}
+
+{% endfor %}
+</tbody>
+</table>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    updateSerialNumbers();
+    });
+    
+    function updateSerialNumbers() {
+    var serialNumberCells = document.getElementsByClassName('slno');
+    for (var i = 0; i < serialNumberCells.length; i++) {
+        serialNumberCells[i].textContent = i + 1;
+    }
+    }
+    </script>
+{% endwith %}
+{% else%}
+  {% include 'GUEST_USER.html' %}
+{% endif %}
+{% endblock content %}>

@@ -1,0 +1,47 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block title %}Big Picture{% endblock title %} 
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid p-0 m-0">
+  <main>
+    {% if user.is_authenticated %}
+    <img 
+    src="{% static 'img/big-picture.svg' %}" alt="" usemap="#image-map">
+
+<map name="image-map">
+    <area target="" alt="Consumers" title="Consumers" href="/todolist/newtodolistitems/770" coords="67,97,233,189" shape="rect">
+    <area target="" alt="Main Backlog" title="Main Backlog" href="/todolist/newtodolistitems/771" coords="281,101,371,185" shape="rect">
+    <area target="" alt="Organization" title="Organization" href="/todolist/newtodolistitems/577" coords="443,96,540,166" shape="rect">
+    <area target="" alt="Value Ownership" title="Value Ownership" href="/todolist/newtodolistitems/773" coords="580,81,811,211" shape="rect">
+    <area target="" alt="Business Case" title="Business Case" href="/todolist/newtodolistitems/774" coords="818,80,957,186" shape="rect">
+    <area target="" alt="Vision" title="Vision" href="/vision" coords="1004,46,1073,122" shape="rect">
+    <area target="" alt="Mission" title="Mission" href="/mission" coords="1005,135,1079,205" shape="rect">
+    <area target="" alt="Value Statement" title="Value Statement" href="/valuestmt" coords="1129,51,1249,114" shape="rect">
+    <area target="" alt="Roadmap" title="Roadmap" href="/roadmap" coords="1128,141,1220,208" shape="rect">
+    <area target="" alt="Goals and Purpose" title="Goals and Purpose" href="/goalspurpose" coords="59,278,189,366" shape="rect">
+    <area target="" alt="Projects and Teams" title="Projects and Teams" href="/projectandteams" coords="247,275,394,406" shape="rect">
+    <area target="" alt="Prioritized Business Value" title="Prioritized Business Value" href="/prioritizedbusinessvalue" coords="447,248,552,368" shape="rect">
+    <area target="" alt="Program Value Stream" title="Program Value Stream" href="/programvs" coords="620,269,740,387" shape="rect">
+    <area target="" alt="Business Value Stream" title="Business Value Stream" href="/businessvs" coords="794,267,896,366" shape="rect">
+    <area target="" alt="Portfolio" title="Portfolio" href="/portfolio" coords="962,279,1034,344" shape="rect">
+    <area target="" alt="Strategy" title="Strategy" href="/strategy" coords="1086,280,1155,350" shape="rect">
+    <area target="" alt="Work Breakdown Structure (WBS)" title="Work Breakdown Structure (WBS)" href="/wbs" coords="66,510,161,642" shape="rect">
+    <area target="" alt="Test-First Development" title="Test-First Development" href="/tfd" coords="218,475,417,663" shape="rect">
+    <area target="" alt="Definition-of-Done" title="Definition-of-Done" href="/dod" coords="446,517,573,605" shape="rect">
+    <area target="" alt="CICD Pipeline" title="CICD Pipeline" href="/cicd" coords="581,426,797,663" shape="rect">
+    <area target="" alt="Continuous Integration" title="Continuous Integration" href="/ci" coords="818,546,902,651" shape="rect">
+    <area target="" alt="Continuous Deployment" title="Continuous Deployment" href="/cd" coords="966,544,1073,641" shape="rect">
+    <area target="" alt="Strategy Question Metrics" title="Strategy Question Metrics" href="/sqm" coords="1088,501,1177,618" shape="rect">
+    <area target="" alt="KPIs - Key Progress Indicators" title="KPIs - Key Progress Indicators" href="/kpis" coords="821,397,892,471" shape="rect">
+    <area target="" alt="OKRs - Objectives and Key Results" title="OKRs - Objectives and Key Results" href="/okrs" coords="970,397,1037,458" shape="rect">
+    <area target="" alt="Leadership" title="Leadership" href="/leadership" coords="1086,94,1117,154" shape="rect">
+</map>
+    {% else%}
+      &nbsp;
+    {% endif %}
+      
+  </main>
+</div>
+</div>
+{% endblock content %}
